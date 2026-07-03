@@ -38,10 +38,21 @@ const server = http.createServer((req, res) => {
         });
 
         req.on('end', () => {
-        const bufferCompleto = Buffer.concat(chunks);
+        try{
+            const bufferCompleto = Buffer.concat(chunks);
+            const dadosObj = JSON.parse(bufferCompleto.toString('utf8'));
 
-        console.log(`[] Buffer completo ${bufferCompleto.toString('utf8')}`);
-        res.end();
+            res.writeHead(200);
+            res.end(JSON.stringify({
+                mensagem: 'Dados recebidos', dados: dadosObj
+            }));
+        }
+        catch (erro){
+            res.writeHead(400);
+            res.end(JSON.stringify({
+                erro: 'Payload JSON invalido'
+            }));
+        }
         });
         return;
     }
