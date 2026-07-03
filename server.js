@@ -30,6 +30,22 @@ const server = http.createServer((req, res) => {
         }
     }
 
+    if (req.url === '/api/data' && req.method === 'POST') {
+        const chunks = [];
+        
+        req.on('data', (dadoRecebido) => {
+            chunks.push(dadoRecebido);
+        });
+
+        req.on('end', () => {
+        const bufferCompleto = Buffer.concat(chunks);
+
+        console.log(`[] Buffer completo ${bufferCompleto.toString('utf8')}`);
+        res.end();
+        });
+        return;
+    }
+
     res.writeHead(404);
     res.end(JSON.stringify({
         erro: 'Rescurso nao encontrado no servidor.'
